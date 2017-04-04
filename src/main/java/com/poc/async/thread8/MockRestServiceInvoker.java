@@ -31,10 +31,12 @@ public class MockRestServiceInvoker {
 				CompletableFuture.supplyAsync(()->filter.apply(retriever.pageRetriever(2),mroPredicate), executorService).thenAccept(resultHandler::collect);
 				CompletableFuture.supplyAsync(()->filter.apply(retriever.pageRetriever(3),mroPredicate), executorService).thenAccept(resultHandler::collect);
 				CompletableFuture.supplyAsync(()->filter.apply(retriever.pageRetriever(4),mroPredicate), executorService).thenAccept(resultHandler::collect);
-			 
-		//sleeping for finishing async tasks 
+		//Approach-1
+		List<String>  finalResults = cf1.thenCombine(cf2, (a,b)->{a.addAll(b);return a;}).thenCombine(cf3, (a,b)->{a.addAll(b);return a;}).thenCombine(cf4, (a,b)->{a.addAll(b);return a;}).join();
+		System.out.println(finalResults); 
+		/*//sleeping for finishing async tasks Approach-2
 		TimeUnit.SECONDS.sleep(3);
-	    System.out.println(AggregatorBean.getInstance().getFinalResult());
+	        System.out.println(AggregatorBean.getInstance().getFinalResult());*/
 	    //shutting dow thread pool
 		executorService.shutdown();
 	}
